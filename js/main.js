@@ -1,8 +1,7 @@
 const gridContainer = document.querySelector('.container');
-
-// Set the size of the grid
-let gridSize = 16;
-let totalCells = gridSize * gridSize;
+var isRandomColor = false; 
+var gridSize = 16;
+var totalCells = gridSize * gridSize;
 
 function clearGrid() {
     const cells = document.querySelectorAll('.grid-cell');
@@ -11,21 +10,38 @@ function clearGrid() {
     });
 }
 
+function removeGrid(){
+    const cells = document.querySelectorAll('.grid-cell');
+    cells.forEach(cell => {
+        cell.remove();
+    });
+}
+
+function randomColor() {
+    return `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
+}
 
 // Function to create the grid  
-function createGrid(gridSize) {
-    for (let i = 0; i < gridSize * gridSize; i++) {
+function createGrid(gridSize = gridSize) {
+    gridContainer.style.display = 'grid';
+    gridContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+    gridContainer.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+    for (let i = 0; i < totalCells; i++) {
         const cell = document.createElement('div');
         cell.classList.add('grid-cell');
-        cell.style.width = `${640 / gridSize}px`; // Set width based on grid size
-        cell.style.height = `${640 / gridSize}px`; // Set height based on grid size
         cell.addEventListener('mouseover', () => {
             cell.style.backgroundColor = 'black'; // Change color on hover
         });
         
-        cell.addEventListener('click', () => {
-            cell.style.backgroundColor = 'black'; // Change color on click
-        });
+        if(isRandomColor) {
+            cell.addEventListener('mouseover', () => {
+                cell.style.backgroundColor = randomColor(); // Change to random color on hover
+            });
+        } else {
+            cell.addEventListener('mouseover', () => {
+                cell.style.backgroundColor = 'black'; // Change color on hover
+            });
+        }
         gridContainer.appendChild(cell);
     }
 }
@@ -33,6 +49,9 @@ function createGrid(gridSize) {
 // Event listeners for control buttons
 document.querySelector('.reset').addEventListener('click', () => {
     clearGrid();
+    removeGrid();
+    gridSize = 16; 
+    totalCells = gridSize * gridSize; 
     createGrid(gridSize);
 });
 
@@ -42,7 +61,8 @@ document.querySelector('.gridSize').addEventListener('click', () => {
         gridSize = parseInt(newSize);
         totalCells = gridSize * gridSize; // Update total cells based on new size
         clearGrid();
-        createGrid(gridSize);
+        removeGrid();
+        createGrid(newSize);
     } else {
         alert("Please enter a valid number between 1 and 100.");
     }
@@ -51,5 +71,12 @@ document.querySelector('.gridSize').addEventListener('click', () => {
 document.querySelector('.clear').addEventListener('click', () => {
     clearGrid();
 }); 
-// Call the function to create the grid when the page loads
+
+document.querySelector('.randomColor').addEventListener('click', () => {
+    isRandomColor = !isRandomColor;  
+    clearGrid();
+    removeGrid();
+    createGrid(gridSize);
+});
+
 document.addEventListener('DOMContentLoaded', createGrid);

@@ -69,3 +69,8 @@ body {
     font-family: "Bitcount Prop Single", system-ui;
 }
 
+[class^="control-item"]:hover{
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: transform 0.2s ease-in-out;
+}
